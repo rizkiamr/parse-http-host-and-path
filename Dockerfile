@@ -9,7 +9,6 @@ ENV GO111MODULE=on
 
 # Copy and download dependencies
 COPY go.mod .
-COPY go.sum .
 RUN go mod download
 
 # Copy the application source
