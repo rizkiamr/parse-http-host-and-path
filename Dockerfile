@@ -1,27 +1,12 @@
-# Build stage
-FROM golang:1.24.1 as builder
-
-# Set the application directory
+# Stage 1: Build the Go application
+FROM golang:1.24.1 AS builder
 WORKDIR /app
-
-# Enable Go modules
-ENV GO111MODULE=on
-
-# Copy and download dependencies
-COPY go.mod .
+COPY go.mod go.sum ./
 RUN go mod download
-
-# Copy the application source
 COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o /binary/app
 
-# Build the application
-RUN CGO_ENABLED=0 go build -o main .
-
-# Execution stage
-FROM gcr.io/distroless/base-debian10
-
-# Copy the built binary
-COPY --from=builder /app/main /
-
-# Execute the application
-CMD ["/main"]
+# Stage 2: Create the minimal Distroless image
+FROM gcr.io/distroless/static:latest
+COPY --from=builder /binary/app /app
+CMD ["/app"]
