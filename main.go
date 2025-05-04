@@ -17,8 +17,8 @@ func parsePath(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/parse-host", parseHost)
-	http.HandleFunc("/parse-path", parsePath)
+	http.HandleFunc("/host", parseHost)
+	http.HandleFunc("/path", parsePath)
 
 	log.Println("starting http server on :8080")
 	err := http.ListenAndServe(":8080", nil)
